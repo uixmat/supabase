@@ -3226,6 +3226,21 @@ export interface HeaderUpgradeCtaClickedEvent {
 }
 
 /**
+ * User clicked the "Upgrade to Pro" CTA in one of the experiment placement surfaces.
+ * GROWTH experiment: `upgradeCtaPlacement` (user_dropdown / home_usage_card).
+ *
+ * @group Events
+ * @source studio
+ */
+export interface UpgradeCtaClickedEvent {
+  action: 'upgrade_cta_clicked'
+  properties: {
+    placement: 'user_dropdown' | 'home_usage_card'
+  }
+  groups: Omit<TelemetryGroups, 'project'>
+}
+
+/**
  * User clicked the primary CTA on a resource exhaustion warning banner.
  *
  * @group Events
@@ -3618,6 +3633,7 @@ export type TelemetryEvent =
   | FreeMicroUpgradeBannerDismissedEvent
   | FreeMicroUpgradeBannerCtaClickedEvent
   | HeaderUpgradeCtaClickedEvent
+  | UpgradeCtaClickedEvent
   | AccessTokenCreatedEvent
   | AccessTokenRemovedEvent
   | ResourceExhaustionBannerUpgradeClickedEvent
