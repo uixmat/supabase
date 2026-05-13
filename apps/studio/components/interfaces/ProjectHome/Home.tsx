@@ -2,14 +2,13 @@ import { DndContext, DragEndEvent, PointerSensor, useSensor, useSensors } from '
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { IS_PLATFORM, useFlag, useParams } from 'common'
 import dayjs from 'dayjs'
-import { Fragment, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { cn } from 'ui'
 
 import { AdvisorSection } from './AdvisorSection'
 import { ConnectSection } from './ConnectSection'
 import { CustomReportSection } from './CustomReportSection'
 import { DEFAULT_SECTION_ORDER, mergeSectionOrder } from './Home.utils'
-import { PlanUsageCard } from './PlanUsageCard'
 import { ProjectUsageSection as ProjectUsageSectionV2 } from './ProjectUsageSection'
 import { ProjectUsageSection as ProjectUsageSectionV1 } from '@/components/interfaces/Home/ProjectUsageSection'
 import { SortableSection } from '@/components/interfaces/ProjectHome/SortableSection'
@@ -95,7 +94,6 @@ export const ProjectHome = () => {
         {!isPaused && (
           <ScaffoldContainer size="large">
             <ScaffoldSection isFullWidth className="gap-12 pb-32">
-              {!showConnectSection && <PlanUsageCard />}
               <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
                 <SortableContext items={renderOrder} strategy={verticalListSortingStrategy}>
                   {renderOrder.map((id) => {
@@ -113,12 +111,9 @@ export const ProjectHome = () => {
                     }
                     if (id === 'connect' && showConnectSection) {
                       return (
-                        <Fragment key={id}>
-                          <SortableSection id={id}>
-                            <ConnectSection />
-                          </SortableSection>
-                          <PlanUsageCard />
-                        </Fragment>
+                        <SortableSection key={id} id={id}>
+                          <ConnectSection />
+                        </SortableSection>
                       )
                     }
                     if (id === 'advisor') {
