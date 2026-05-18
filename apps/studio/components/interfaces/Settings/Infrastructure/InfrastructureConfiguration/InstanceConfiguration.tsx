@@ -54,9 +54,13 @@ import { timeout } from '@/lib/helpers'
 
 interface InstanceConfigurationUIProps {
   diagramOnly?: boolean
+  showPlanUsage?: boolean
 }
 
-const InstanceConfigurationUI = ({ diagramOnly = false }: InstanceConfigurationUIProps) => {
+const InstanceConfigurationUI = ({
+  diagramOnly = false,
+  showPlanUsage,
+}: InstanceConfigurationUIProps) => {
   const router = useRouter()
   const reactFlow = useReactFlow()
   const isOrioleDb = useIsOrioleDb()
@@ -152,9 +156,10 @@ const InstanceConfigurationUI = ({ diagramOnly = false }: InstanceConfigurationU
             loadBalancers: loadBalancers ?? [],
             onSelectRestartReplica: setSelectedReplicaToRestart,
             onSelectDropReplica: setSelectedReplicaToDrop,
+            showPlanUsage,
           })
         : [],
-    [isSuccessReplicas, isSuccessLoadBalancers, primary, replicas, loadBalancers]
+    [isSuccessReplicas, isSuccessLoadBalancers, primary, replicas, loadBalancers, showPlanUsage]
   )
 
   const edges: Edge[] = useMemo(
@@ -368,12 +373,16 @@ const InstanceConfigurationUI = ({ diagramOnly = false }: InstanceConfigurationU
 
 interface InstanceConfigurationProps {
   diagramOnly?: boolean
+  showPlanUsage?: boolean
 }
 
-export const InstanceConfiguration = ({ diagramOnly = false }: InstanceConfigurationProps) => {
+export const InstanceConfiguration = ({
+  diagramOnly = false,
+  showPlanUsage,
+}: InstanceConfigurationProps) => {
   return (
     <ReactFlowProvider>
-      <InstanceConfigurationUI diagramOnly={diagramOnly} />
+      <InstanceConfigurationUI diagramOnly={diagramOnly} showPlanUsage={showPlanUsage} />
     </ReactFlowProvider>
   )
 }
