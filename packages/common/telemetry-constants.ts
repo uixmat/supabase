@@ -3227,7 +3227,7 @@ export interface HeaderUpgradeCtaClickedEvent {
 
 /**
  * User clicked the "Upgrade to Pro" CTA in one of the experiment placement surfaces.
- * GROWTH experiment: `upgradeCtaPlacement` (user_dropdown / home_usage_card).
+ * GROWTH experiment: `upgradeCtaPlacement` (user_dropdown / home_usage_card / org_projects_list).
  *
  * @group Events
  * @source studio
@@ -3235,7 +3235,7 @@ export interface HeaderUpgradeCtaClickedEvent {
 export interface UpgradeCtaClickedEvent {
   action: 'upgrade_cta_clicked'
   properties: {
-    placement: 'user_dropdown' | 'home_usage_card'
+    placement: 'user_dropdown' | 'home_usage_card' | 'org_projects_list'
   }
   groups: Omit<TelemetryGroups, 'project'>
 }
@@ -3254,7 +3254,7 @@ export interface UpgradeCtaPlacementExperimentExposedEvent {
     /**
      * The experiment variant shown to the user
      */
-    variant: 'control' | 'user_dropdown' | 'home_usage_card'
+    variant: 'control' | 'user_dropdown' | 'home_usage_card' | 'org_projects_list'
   }
   groups: Omit<TelemetryGroups, 'project'>
 }
