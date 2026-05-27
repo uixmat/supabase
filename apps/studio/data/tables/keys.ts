@@ -6,11 +6,19 @@ export const tableKeys = {
     projectRef: string | undefined,
     schema?: string,
     includeColumns?: boolean,
-    pageSize?: number
+    pageSize?: number,
+    nameFilter?: string
   ) =>
-    ['projects', projectRef, 'tables', 'infinite', schema, includeColumns, pageSize].filter(
-      (part) => part !== undefined && part !== null && part !== ''
-    ),
+    [
+      'projects',
+      projectRef,
+      'tables',
+      'infinite',
+      schema,
+      includeColumns,
+      pageSize,
+      nameFilter,
+    ] as const,
   retrieve: (projectRef: string | undefined, name: string, schema: string) =>
     ['projects', projectRef, 'table', schema, name].filter(Boolean),
 }
