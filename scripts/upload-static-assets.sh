@@ -35,6 +35,12 @@ if [[ "$FORCE_ASSET_CDN" != "1" ]] && [[ "$VERCEL_ENV" != "production" ]]; then
     exit 0
 fi
 
+# Skip when CDN credentials aren't configured (e.g. fork/preview production deploys)
+if [[ -z "$ASSET_CDN_S3_ENDPOINT" ]] || [[ -z "$SITE_NAME" ]]; then
+    echo "Skipping asset upload. ASSET_CDN_S3_ENDPOINT or SITE_NAME is not configured."
+    exit 0
+fi
+
 # Set the cdnBucket variable based on NEXT_PUBLIC_ENVIRONMENT
 if [[ "$NEXT_PUBLIC_ENVIRONMENT" == "staging" ]]; then
   BUCKET_NAME="frontend-assets-staging"
