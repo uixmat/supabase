@@ -6,7 +6,7 @@ import { linkTransform, UrlTransformFunction } from '~/lib/mdx/plugins/rehypeLin
 import remarkMkDocsAdmonition from '~/lib/mdx/plugins/remarkAdmonition'
 import { removeTitle } from '~/lib/mdx/plugins/remarkRemoveTitle'
 import remarkPyMdownTabs from '~/lib/mdx/plugins/remarkTabs'
-import { getGitHubFileContents, octokit, OCTOKIT_RETRY_OPTIONS } from '~/lib/octokit'
+import { getGitHubFileContents, hasDocsGitHubAppCredentials, octokit, OCTOKIT_RETRY_OPTIONS } from '~/lib/octokit'
 import { SerializeOptions } from '~/types/next-mdx-remote-serialize'
 import { capitalize } from 'lodash-es'
 import rehypeSlug from 'rehype-slug'

@@ -76,6 +76,8 @@ export const TroubleshootingSchema = z
       ])
     ),
     keywords: z.array(z.string()).optional(),
+    teams: z.array(z.string()).optional(),
+    types: z.array(z.string()).optional(),
     api: z
       .object({
         sdk: z.array(z.string()).optional(),

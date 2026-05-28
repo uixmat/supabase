@@ -1,6 +1,7 @@
 import { codeBlock } from 'common-tags'
 import { Check, PlusCircle } from 'lucide-react'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
 import { Heading, Popover, PopoverContent, PopoverTrigger } from 'ui'
 import { CodeBlock } from 'ui-patterns/CodeBlock'
@@ -14,7 +15,7 @@ import {
 import { GuideTemplate, newEditLink } from '@/features/docs/GuidesMdx.template'
 import { genGuideMeta } from '@/features/docs/GuidesMdx.utils'
 import { TabPanel, Tabs } from '@/features/ui/Tabs'
-import { getGitHubFileContents } from '@/lib/octokit'
+import { getGitHubFileContents, hasDocsGitHubAppCredentials } from '@/lib/octokit'
 
 const meta = {
   title: 'Terraform Provider reference',
@@ -347,6 +348,10 @@ function DataSources({ schema }: { schema: any }) {
 }
 
 const TerraformReferencePage = async () => {
+  if (!hasDocsGitHubAppCredentials()) {
+    notFound()
+  }
+
   const { schema } = await getSchema()
 
   const editLink = newEditLink('supabase/terraform-provider-supabase')

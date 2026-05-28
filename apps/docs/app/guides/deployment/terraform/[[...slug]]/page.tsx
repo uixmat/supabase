@@ -7,7 +7,7 @@ import { linkTransform, UrlTransformFunction } from '~/lib/mdx/plugins/rehypeLin
 import remarkMkDocsAdmonition from '~/lib/mdx/plugins/remarkAdmonition'
 import { removeTitle } from '~/lib/mdx/plugins/remarkRemoveTitle'
 import remarkPyMdownTabs from '~/lib/mdx/plugins/remarkTabs'
-import { getGitHubFileContents } from '~/lib/octokit'
+import { getGitHubFileContents, hasDocsGitHubAppCredentials } from '~/lib/octokit'
 import { SerializeOptions } from '~/types/next-mdx-remote-serialize'
 import matter from 'gray-matter'
 import { notFound } from 'next/navigation'
@@ -144,7 +144,13 @@ const getContent = async ({ slug }: Params) => {
 }
 
 const generateStaticParams = !IS_DEV
-  ? async () => pageMap.map(({ slug }) => ({ slug: slug ? [slug] : [] }))
+  ? async () => {
+      if (!hasDocsGitHubAppCredentials()) {
+        return []
+      }
+
+      return pageMap.map(({ slug }) => ({ slug: slug ? [slug] : [] }))
+    }
   : getEmptyArray
 const generateMetadata = genGuideMeta(getContent)
 

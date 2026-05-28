@@ -10,6 +10,10 @@ import { OCTOKIT_RETRY_OPTIONS } from './octokit.constants'
 
 export { OCTOKIT_RETRY_OPTIONS }
 
+export function hasDocsGitHubAppCredentials() {
+  return Boolean(process.env.DOCS_GITHUB_APP_PRIVATE_KEY)
+}
+
 const RetryOctokit = Octokit.plugin(retry)
 
 let octokitInstance: InstanceType<typeof RetryOctokit>

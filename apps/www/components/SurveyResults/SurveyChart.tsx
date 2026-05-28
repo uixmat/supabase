@@ -16,10 +16,13 @@ import {
 import { TwoOptionToggle } from '../../../studio/components/ui/TwoOptionToggle'
 
 // Separate Supabase client for survey project
-const externalSupabase = createClient(
-  process.env.NEXT_PUBLIC_SURVEY_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SURVEY_SUPABASE_ANON_KEY!
-)
+function getExternalSupabase() {
+  const url = process.env.NEXT_PUBLIC_SURVEY_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SURVEY_SUPABASE_ANON_KEY
+  if (!url || !anonKey) return null
+
+  return createClient(url, anonKey)
+}
 
 // Sentinel for “no filter”
 const NO_FILTER = 'unset'
@@ -119,6 +122,12 @@ function useSurveyData(
         setError(null)
 
         let data, fetchError
+
+        const externalSupabase = getExternalSupabase()
+        if (!externalSupabase) {
+          setError('Survey data is unavailable in this environment.')
+          return
+        }
 
         const functionParamsData = functionParams(activeFilters)
         const { data: functionData, error: functionError } = await externalSupabase.rpc(

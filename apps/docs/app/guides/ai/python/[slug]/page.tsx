@@ -4,7 +4,7 @@ import rehypeSlug from 'rehype-slug'
 
 import { GuideTemplate, newEditLink } from '~/features/docs/GuidesMdx.template'
 import { genGuideMeta, removeRedundantH1 } from '~/features/docs/GuidesMdx.utils'
-import { getGitHubFileContents } from '~/lib/octokit'
+import { getGitHubFileContents, hasDocsGitHubAppCredentials } from '~/lib/octokit'
 import { UrlTransformFunction, linkTransform } from '~/lib/mdx/plugins/rehypeLinkTransform'
 import remarkMkDocsAdmonition from '~/lib/mdx/plugins/remarkAdmonition'
 import { removeTitle } from '~/lib/mdx/plugins/remarkRemoveTitle'
@@ -128,7 +128,13 @@ const urlTransform: UrlTransformFunction = (url) => {
   }
 }
 
-const generateStaticParams = () => pageMap.map(({ slug }) => ({ slug }))
+const generateStaticParams = () => {
+  if (!hasDocsGitHubAppCredentials()) {
+    return []
+  }
+
+  return pageMap.map(({ slug }) => ({ slug }))
+}
 const generateMetadata = genGuideMeta(getContent)
 
 export default PythonClientDocs

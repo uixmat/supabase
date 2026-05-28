@@ -46,10 +46,13 @@ interface SurveyDataContextValue {
 
 const SurveyDataContext = createContext<SurveyDataContextValue | null>(null)
 
-const surveyClient = createClient(
-  process.env.NEXT_PUBLIC_SURVEY_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SURVEY_SUPABASE_ANON_KEY!
-)
+function getSurveyClient() {
+  const url = process.env.NEXT_PUBLIC_SURVEY_SUPABASE_URL
+  const anonKey = process.env.NEXT_PUBLIC_SURVEY_SUPABASE_ANON_KEY
+  if (!url || !anonKey) return null
+
+  return createClient(url, anonKey)
+}
 
 function paramsKey(params: Record<string, any>): string {
   const keys = Object.keys(params).sort()
@@ -108,6 +111,9 @@ export function SurveyDataProvider({
       if (existing) return existing
 
       const promise = (async () => {
+        const surveyClient = getSurveyClient()
+        if (!surveyClient) return []
+
         const { data, error } = await surveyClient.rpc(rpcName, params)
         if (error) throw error
         const transformed = transformSurveyRows(data ?? [])
