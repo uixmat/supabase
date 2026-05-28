@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
 import { Session } from '@supabase/supabase-js'
 import { SITE_ORIGIN } from '~/lib/constants'
-import supabase from '~/lib/supabaseMisc'
+import getSupabaseMisc from '~/lib/supabaseMisc'
 
 import DefaultLayout from '~/components/Layouts/Default'
 import { TicketState, ConfDataContext, UserData } from '~/components/LaunchWeek/hooks/use-conf-data'
@@ -12,6 +12,11 @@ import SectionContainer from '~/components/Layouts/SectionContainer'
 import LW11StickyNav from '~/components/LaunchWeek/11/Releases/LW11StickyNav'
 import LW11Header from '~/components/LaunchWeek/11/Releases/LW11Header'
 import MainStage from '~/components/LaunchWeek/11/Releases/MainStage'
+
+const supabase =
+  process.env.NEXT_PUBLIC_MISC_USE_URL && process.env.NEXT_PUBLIC_MISC_USE_ANON_KEY
+    ? getSupabaseMisc()
+    : null
 
 const BuildStage = dynamic(() => import('~/components/LaunchWeek/11/Releases/BuildStage'))
 const LW11Meetups = dynamic(() => import('~/components/LaunchWeek/11/LW11Meetups'))

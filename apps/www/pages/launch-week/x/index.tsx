@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { NextSeo } from 'next-seo'
 import { Session } from '@supabase/supabase-js'
 import { LW_URL, SITE_ORIGIN } from '~/lib/constants'
-import supabase from '~/lib/supabaseMisc'
+import getSupabaseMisc from '~/lib/supabaseMisc'
 
 import FaviconImports from '~/components/LaunchWeek/X/FaviconImports'
 import DefaultLayout from '~/components/Layouts/Default'
@@ -15,6 +15,11 @@ import { Meetup } from '~/components/LaunchWeek/X/LWXMeetups'
 import LWXStickyNav from '~/components/LaunchWeek/X/Releases/LWXStickyNav'
 import LWXHeader from '~/components/LaunchWeek/X/Releases/LWXHeader'
 import MainStage from '~/components/LaunchWeek/X/Releases/MainStage'
+
+const supabase =
+  process.env.NEXT_PUBLIC_MISC_USE_URL && process.env.NEXT_PUBLIC_MISC_USE_ANON_KEY
+    ? getSupabaseMisc()
+    : null
 
 const BuildStage = dynamic(() => import('~/components/LaunchWeek/X/Releases/BuildStage'))
 const LWXMeetups = dynamic(() => import('~/components/LaunchWeek/X/LWXMeetups'))

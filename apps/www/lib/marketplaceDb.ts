@@ -1,7 +1,7 @@
 import { toPartner as miscDbToPartner, Partner } from '~/types/partners'
 import { createMarketplaceClient, fullImageUrl, type Listing } from 'common/marketplace-client'
 
-import supabase from './supabaseMisc'
+import getSupabaseMisc from './supabaseMisc'
 
 // Switch between new Marketplace DB and legacy Supabase Misc DB by updating the environment var
 // in the Vercel deployment and redeploying, as that will take effect more quickly than flipping a
@@ -9,7 +9,19 @@ import supabase from './supabaseMisc'
 const isUseMarketplaceDb =
   process.env.NEXT_PUBLIC_INTEGRATIONS_MARKETPLACE_DB?.toLowerCase() === 'true'
 
-const marketplaceClient = createMarketplaceClient()
+function hasMiscDbConfig() {
+  return Boolean(process.env.NEXT_PUBLIC_MISC_USE_URL && process.env.NEXT_PUBLIC_MISC_USE_ANON_KEY)
+}
+
+function hasMarketplaceDbConfig() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_MARKETPLACE_API_URL && process.env.NEXT_PUBLIC_MARKETPLACE_PUBLISHABLE_KEY
+  )
+}
+
+function getMarketplaceClient() {
+  return createMarketplaceClient()
+}
 
 function toPartner(listing: Listing): Partner {
   const {
@@ -47,7 +59,7 @@ function toPartner(listing: Listing): Partner {
 }
 
 async function getMarketplaceListings(): Promise<Partner[]> {
-  const { data } = await marketplaceClient
+  const { data } = await getMarketplaceClient()
     .from('listings')
     .select('*')
     .is('publish_marketplace', true)
@@ -60,9 +72,11 @@ async function getMarketplaceListings(): Promise<Partner[]> {
  */
 export async function listPartners(): Promise<Partner[]> {
   if (isUseMarketplaceDb) {
+    if (!hasMarketplaceDbConfig()) return []
     return getMarketplaceListings()
   } else {
-    const { data } = await supabase
+    if (!hasMiscDbConfig()) return []
+    const { data } = await getSupabaseMisc()
       .from('partners')
       .select('*')
       .eq('approved', true)
@@ -75,7 +89,7 @@ export async function listPartners(): Promise<Partner[]> {
 }
 
 async function getMarketplaceListingSlugs(): Promise<string[]> {
-  const { data } = await marketplaceClient
+  const { data } = await getMarketplaceClient()
     .from('listings')
     .select('slug')
     .is('publish_marketplace', true)
@@ -88,9 +102,11 @@ async function getMarketplaceListingSlugs(): Promise<string[]> {
  */
 export async function listPartnerSlugs(): Promise<string[]> {
   if (isUseMarketplaceDb) {
+    if (!hasMarketplaceDbConfig()) return []
     return getMarketplaceListingSlugs()
   } else {
-    const { data } = await supabase
+    if (!hasMiscDbConfig()) return []
+    const { data } = await getSupabaseMisc()
       .from('partners')
       .select('slug')
       .eq('approved', true)
@@ -102,7 +118,7 @@ export async function listPartnerSlugs(): Promise<string[]> {
 
 async function searchMarketplaceListings(search: string): Promise<Partner[] | null> {
   const searchTerm = search.trim()
-  let query = marketplaceClient.from('listings').select('*').is('publish_marketplace', true)
+  let query = getMarketplaceClient().from('listings').select('*').is('publish_marketplace', true)
 
   if (searchTerm) {
     const searchPattern = `%${searchTerm}%`
@@ -126,10 +142,12 @@ async function searchMarketplaceListings(search: string): Promise<Partner[] | nu
  */
 export async function searchPartners(search: string): Promise<Partner[] | null> {
   if (isUseMarketplaceDb) {
+    if (!hasMarketplaceDbConfig()) return []
     return searchMarketplaceListings(search)
   } else {
+    if (!hasMiscDbConfig()) return []
     const searchTerm = search.trim()
-    let query = supabase
+    let query = getSupabaseMisc()
       .from('partners')
       .select('*')
       .eq('approved', true)
@@ -153,7 +171,7 @@ export async function searchPartners(search: string): Promise<Partner[] | null> 
 }
 
 async function getMarketplaceListing(slug: string): Promise<Partner | null> {
-  const { data } = await marketplaceClient
+  const { data } = await getMarketplaceClient()
     .from('listings')
     .select('*')
     .eq('slug', slug)
@@ -168,9 +186,11 @@ async function getMarketplaceListing(slug: string): Promise<Partner | null> {
  */
 export async function getPartner(slug: string): Promise<Partner | null> {
   if (isUseMarketplaceDb) {
+    if (!hasMarketplaceDbConfig()) return null
     return getMarketplaceListing(slug)
   } else {
-    let { data } = await supabase
+    if (!hasMiscDbConfig()) return null
+    let { data } = await getSupabaseMisc()
       .from('partners')
       .select('*')
       .eq('type', 'technology')

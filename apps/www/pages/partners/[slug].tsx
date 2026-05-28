@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next'
-import supabase from '~/lib/supabaseMisc'
+import getSupabaseMisc from '~/lib/supabaseMisc'
 import Error404 from '../404'
 
 function PartnerPage() {
@@ -15,7 +15,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  let { data: partner } = await supabase
+  if (!process.env.NEXT_PUBLIC_MISC_USE_URL || !process.env.NEXT_PUBLIC_MISC_USE_ANON_KEY) {
+    return { notFound: true }
+  }
+
+  let { data: partner } = await getSupabaseMisc()
     .from('partners')
     .select('*')
     .eq('approved', true)
