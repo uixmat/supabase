@@ -224,7 +224,12 @@ function getAssetPrefix() {
   }
 
   // Force disable CDN
-  if (process.env.FORCE_ASSET_CDN === '-1') {
+  if (
+    process.env.FORCE_ASSET_CDN === '-1' ||
+    process.env.SKIP_ASSET_UPLOAD === '1' ||
+    !process.env.SITE_NAME ||
+    !process.env.VERCEL_GIT_COMMIT_SHA
+  ) {
     return undefined
   }
 

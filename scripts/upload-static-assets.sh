@@ -24,20 +24,20 @@ set -eo pipefail
 #######
 
 # If asset CDN is specifically disabled (i.e. studio self-hosted), we skip
-if [[ "$FORCE_ASSET_CDN" == "-1" ]]; then
+if [[ "$FORCE_ASSET_CDN" == "-1" ]] || [[ "$SKIP_ASSET_UPLOAD" == "1" ]]; then
     echo "Skipping asset upload. Set FORCE_ASSET_CDN=1 or VERCEL_ENV=production to execute."
+    exit 0
+fi
+
+# Skip when CDN is not fully configured (e.g. fork production deploys)
+if [[ ! "$ASSET_CDN_S3_ENDPOINT" =~ ^https?:// ]] || [[ -z "$SITE_NAME" ]] || [[ -z "$AWS_ACCESS_KEY_ID" ]] || [[ -z "$AWS_SECRET_ACCESS_KEY" ]]; then
+    echo "Skipping asset upload. CDN credentials are not configured."
     exit 0
 fi
 
 # Check for force env var or production environment
 if [[ "$FORCE_ASSET_CDN" != "1" ]] && [[ "$VERCEL_ENV" != "production" ]]; then
     echo "Skipping asset upload. Set FORCE_ASSET_CDN=1 or VERCEL_ENV=production to execute."
-    exit 0
-fi
-
-# Skip when CDN credentials aren't configured (e.g. fork/preview production deploys)
-if [[ -z "$ASSET_CDN_S3_ENDPOINT" ]] || [[ -z "$SITE_NAME" ]]; then
-    echo "Skipping asset upload. ASSET_CDN_S3_ENDPOINT or SITE_NAME is not configured."
     exit 0
 fi
 

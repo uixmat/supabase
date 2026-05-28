@@ -26,7 +26,7 @@
     "last-changed:reset": "pnpm run last-changed -- --reset",
     "lint": "eslint .",
     "lint:mdx": "supa-mdx-lint content --config ../../supa-mdx-lint.config.toml",
-    "postbuild": "pnpm run build:sitemap && pnpm run build:llms && ./../../scripts/upload-static-assets.sh",
+    "postbuild": "pnpm run build:sitemap && pnpm run build:llms && if [ \"$SKIP_ASSET_UPLOAD\" != \"1\" ]; then ./../../scripts/upload-static-assets.sh; fi",
     "prebuild": "pnpm run codegen:graphql && pnpm run codegen:references && pnpm run codegen:examples && pnpm run build:guides-markdown && pnpm run build:gz-archive",
     "predev": "pnpm run codegen:graphql && pnpm run codegen:references && pnpm run codegen:examples",
     "preembeddings": "pnpm run codegen:references",
