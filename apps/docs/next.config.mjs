@@ -192,15 +192,15 @@ const configExport = () => {
   return plugins.reduce((acc, next) => next(acc), nextConfig)
 }
 
-export default withSentryConfig(configExport, {
+const sentryWebpackPluginOptions = {
   // For all available options, see:
   // https://www.npmjs.com/package/@sentry/webpack-plugin#options
 
   org: 'supabase',
   project: 'docs',
 
-  // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  silent: true,
+  telemetry: false,
 
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
@@ -208,15 +208,14 @@ export default withSentryConfig(configExport, {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
 
-  // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
-  // This can increase your server load as well as your hosting bill.
-  // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
-  // side errors will fail.
-  // tunnelRoute: "/monitoring",
-
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,
-})
+}
+
+// Skip Sentry webpack plugin on fork/preview deploys without Supabase's auth token.
+export default process.env.SENTRY_AUTH_TOKEN
+  ? withSentryConfig(configExport, sentryWebpackPluginOptions)
+  : configExport()
 
 function getAssetPrefix() {
   // If not force enabled, but not production env, disable CDN

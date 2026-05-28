@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/nextjs'
 import { hasConsented, IS_PLATFORM } from 'common'
 import { IS_DEV } from './lib/constants'
 
-if (!IS_DEV) {
+if (!IS_DEV && process.env.NEXT_PUBLIC_SENTRY_DSN) {
   Sentry.init({
     dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
 
