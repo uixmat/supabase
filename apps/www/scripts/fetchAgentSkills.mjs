@@ -44,6 +44,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error(err)
-  process.exit(1)
+  console.warn('[fetchAgentSkills] Skipping agent-skills fetch:', err.message)
+  process.exit(0)
 })
