@@ -38,3 +38,4 @@ public/docs.tar.gz
 
 # Sentry Config File
 .env.sentry-build-plugin
+.vercel
