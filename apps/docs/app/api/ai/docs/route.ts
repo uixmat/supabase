@@ -5,32 +5,9 @@ import OpenAI from 'openai'
 
 import { isFeatureEnabled } from 'common/enabled-features'
 
-export const runtime = 'edge'
-/* To avoid OpenAI errors, restrict to the Vercel Edge Function regions that
-  overlap with the OpenAI API regions.
-
-  Reference for Vercel regions: https://vercel.com/docs/edge-network/regions#region-list
-  Reference for OpenAI regions: https://help.openai.com/en/articles/5347006-openai-api-supported-countries-and-territories
-  */
-export const preferredRegion = [
-  'arn1',
-  'bom1',
-  'cdg1',
-  'cle1',
-  'cpt1',
-  'dub1',
-  'fra1',
-  'gru1',
-  'hnd1',
-  'iad1',
-  'icn1',
-  'kix1',
-  'lhr1',
-  'pdx1',
-  'sfo1',
-  'sin1',
-  'syd1',
-]
+// Node runtime avoids Vercel Hobby's 1 MB Edge Function bundle limit (OpenAI + tiktoken).
+export const runtime = 'nodejs'
+export const maxDuration = 60
 
 const openAiKey = process.env.OPENAI_API_KEY
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL as string
